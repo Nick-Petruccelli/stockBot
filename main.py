@@ -1,14 +1,13 @@
-import requests
-import json
+from stockEnv import StocksEnv
+from dqnModel import DQN
+import tensorflow as tf
 
-key = ""
-with open("tiingoKey.txt", "r") as data:
-    key = data.read().strip()
-
-headers = {
-            'Content-Type': 'application/json'
-}
-requestResponse = requests.get(f"https://api.tiingo.com/tiingo/daily/aapl/prices?startDate=2014-11-21&endDate=2024-11-21&format=json&resampleFreq=daily&token={key}", headers=headers)
-with open("oneDayOfData.json", "w") as file:
-    json.dump(requestResponse.json(), file)
+if __name__ == "__main__":
+    print(tf.test.is_gpu_available())
+    past_days_looked_at = 7
+    env = StocksEnv(past_days_looked_at=past_days_looked_at)
+    #n_inputs = past_days*3(ie open, close , volume) + curBalance + curStocksHeld + day + month
+    n_inputs = [past_days_looked_at * 3 + 4]
+    model = DQN(n_outputs=2, input_size=n_inputs)
+    model.train(env)
 

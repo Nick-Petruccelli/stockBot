@@ -4,6 +4,7 @@ from collections import deque
 import numpy as np
 import matplotlib.pyplot as plt
 
+N_EPISODES = 780
 
 class DQN():
     def __init__(self,n_outputs, input_size, batch_size=32, discount_factor=.95, optimizer=keras.optimizers.Adam(learning_rate=1e-3), loss_fn=keras.losses.MeanSquaredError()):
@@ -14,7 +15,7 @@ class DQN():
         self.optimizer = optimizer
         self.loss_fn = loss_fn
         self.model = keras.models.Sequential([
-                keras.layers.Dense(32, activation="elu", input_size=input_size),
+                keras.layers.Dense(32, activation="elu", input_shape=input_size),
                 keras.layers.Dense(16, activation="elu"),
                 keras.layers.Dense(8, activation="elu"),
                 keras.layers.Dense(4, activation="elu"),
@@ -57,24 +58,28 @@ class DQN():
             loss = tf.reduce_mean(self.loss_fn(target_q_values, q_values))
         grads = tape.gradient(loss, self.model.trainable_variables)
         self.optimizer.apply_gradients(zip(grads, self.model.trainable_variables))
-        if episode % 100 == 0:
+        if episode % 50 == 0:
             self.target_model.set_weights(self.model.get_weights())
 
-    def train(self, env, n_episodes=600, max_steps=200):
+    def train(self, env):
         rewards_per_episode = []
-        epsilon_denominator = int(n_episodes * .8)
-        for episode in range(n_episodes):
-            obs = env.reset()
+        epsilon_denominator = int(N_EPISODES * .8)
+        episode = 0
+        while True:
+            obs = env.start_next_episode()
+            if len(obs) == 0:
+                break
             reward_total = 0
-            for step in range(max_steps):
+            while True:
                 epsilon = max(1 - episode / epsilon_denominator, .01)
-                obs, reward, done, info = self.take_step(env, obs, epsilon)
+                obs, reward, done, _ = self.take_step(env, obs, epsilon)
                 reward_total += reward
                 if done:
                     rewards_per_episode.append(reward_total)
                     break
             if episode > 50:
                 self.training_step(episode)
+            episode += 1
         plt.plot(rewards_per_episode)
         plt.savefig("plots/DoubleDQNResult.png")
-        self.model.save_weights("lunerLanderModel.keras")
+        self.model.save("dqnModel.keras")
