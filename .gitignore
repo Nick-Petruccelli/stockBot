@@ -2,3 +2,4 @@ env
 tiingoKey.txt
 data/*
 dqnModel.keras
+plots/*

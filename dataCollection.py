@@ -8,7 +8,7 @@ with open("tiingoKey.txt", "r") as data:
 headers = {
             'Content-Type': 'application/json'
 }
-train_stocks = ["aapl","msft","amzn","nvda","googl","tsla","goog","brk.b","meta","unh",
+train_stocks = ["appl","msft","amzn","nvda","googl","tsla","goog","brk.b","meta","unh",
                 "xom","lly","jpm","jnj","v","pg","ma","avgo","hd","cvx"]
 
 for ticker in train_stocks:
