@@ -1,7 +1,7 @@
 ITCS-3156 Final Report
 
 Introduction:
-<b>
+-
 For my project I decided to attempt to make a reinforcement learning agent that is capable of trading stocks autonomously. The motivation behind this project was to learn about the basic techniques of machine learning and working with neural networks. 
 Data:
 The data for this project was a sample of the top 20 performing stocks on the US stock market over the past 10 years. The data that I decided to look at to train the model was the opening price, closing price and volume of stock traded over the past 7 days, the day and month of the year. To collect this data I used the Tiingo api. When I conducted the preliminary data analysis I noticed that since I chose to collect data from the top 20 stocks most of the stocks had a fairly positive trend upwards, this is important because we should note that all of the stocks that the agent trained on had positive growth so it will probably have unrealistic results. 
